@@ -5,6 +5,12 @@ var app = express();
 
 app.use(bodyParser.json());
   
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.get('/operadoras', function(req, res) {
   var dados = [
     { nome: "Oi", codigo: "11", categoria: "Celular", preco: 1 },

@@ -38,23 +38,32 @@
 
     <script>
         angular.module("listaTelefonica", ["ngMessages"]);
-        angular.module("listaTelefonica").controller("listaTelefonicaController", function ($scope, $filter, uppercaseFilter) {
+        angular.module("listaTelefonica").controller("listaTelefonicaController", function ($scope,
+            $filter, $http, uppercaseFilter) {
             $scope.appName = "Lista Telefônica";
-            $scope.contatos = [
-                { nome: $filter("uppercase")("Francini"), telefone: "9999-9999", data: new Date(), cor: "black" },
-                { nome: uppercaseFilter("Gabriel"), telefone: "9999-8888", data: new Date(), cor: "yellow" },
-                { nome: "Nice", telefone: "9999-7777", data: new Date(), cor: "purple" }
-            ]
+            $scope.contatos = [];
+            var carregarContatos = function () {
+                $http.get("http://localhost:8000/contatos").then(function (response) {
+                    $scope.contatos = response.data;
+                }, function error(response){
+                    console.log("Erro: " + response);
+                });
+            };
+            
             $scope.adicionarContato = function (contato) {
                 $scope.contatos.push(angular.copy(contato));
                 delete $scope.contato;
                 $scope.contatoForm.$setPristine();
             }
-            $scope.operadoras = [
-                { nome: "Oi", codigo: "11", categoria: "Celular", preco: 1 },
-                { nome: "Tim", codigo: "41", categoria: "Celular", preco: 2 },
-                { nome: "Claro", codigo: "25", categoria: "Fixo", preco: 3 }
-            ]
+
+            var carregarOperadoras = function () {
+                $http.get("http://localhost:8000/operadoras").then(function (response) {
+                    $scope.operadoras = response.data;
+                }, function error(response){
+                    console.log("Erro: " + response);
+                });
+            };
+
             $scope.apagarContatos = function (contatos) {
                 $scope.contatos = contatos.filter(function (contato) {
                     if (!contato.selecionado) return contato;
@@ -69,8 +78,9 @@
                 $scope.criterioDeOrdenacao = campo;
                 $scope.direcaoOrdenacao = !$scope.direcaoOrdenacao;
             }
+            carregarOperadoras();
+            carregarContatos();
         });
-
 
     </script>
 </head>
@@ -89,7 +99,8 @@
                     <th>Data/Hora</th>
                     <th></th>
                 </tr>
-                <tr ng-repeat="contato in contatos | filter:{nome: inputFilter} | orderBy:criterioDeOrdenacao:direcaoOrdenacao" ng-class="{selecionado: contato.selecionado}">
+                <tr ng-repeat="contato in contatos | filter:{nome: inputFilter} | orderBy:criterioDeOrdenacao:direcaoOrdenacao"
+                    ng-class="{selecionado: contato.selecionado}">
                     <th><input type="checkbox" ng-model="contato.selecionado" class="form-control"></th>
                     <td>{{contato.nome}}</td>
                     <td>{{contato.telefone}}</td>
@@ -103,7 +114,8 @@
                     placeholder="Nome" class="form-control">
                 <input ng-model="contato.telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/" type="text"
                     name="telefone" placeholder="Telefone" class="form-control">
-                <select ng-model="contato.operadora" ng-options="operadora.nome + ' ( ' + (operadora.preco | currency)+ ' ) ' for operadora in operadoras | orderBy: 'nome'"
+                <select ng-model="contato.operadora"
+                    ng-options="operadora.nome + ' ( ' + (operadora.preco | currency)+ ' ) ' for operadora in operadoras | orderBy: 'nome'"
                     class="form-control">
                     <option value="">Selecione uma operadora</option>
                 </select>
@@ -121,11 +133,11 @@
                 </div>
             </div>
             <div ng-show="contatoForm.telefone.$error.required && contatoForm.telefone.$dirty"
-                    class="alert alert-danger">
-                    Por favor, preencha telefone!
-                </div>
-                <div ng-show="contatoForm.telefone.$error.pattern" class="alert alert-danger">
-                    O campo telefone deve ter o formado DDDD-DDD.
+                class="alert alert-danger">
+                Por favor, preencha telefone!
+            </div>
+            <div ng-show="contatoForm.telefone.$error.pattern" class="alert alert-danger">
+                O campo telefone deve ter o formado DDDD-DDD.
             </div>
             <div ng-include="'footer.html'"></div>
         </div>

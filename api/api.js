@@ -20,14 +20,19 @@ app.get('/operadoras', function(req, res) {
   res.send(JSON.stringify(dados));
 });
 
+var contatos = [
+  { nome: "Francini", telefone: "9999-9999", data: new Date(), cor: "black" },
+  { nome: "Gabriel", telefone: "9999-8888", data: new Date(), cor: "yellow" },
+  { nome: "Nice", telefone: "9999-7777", data: new Date(), cor: "purple" }
+]; 
 
 app.get('/contatos', function(req, res) {
-    var dados = [
-        { nome: "Francini", telefone: "9999-9999", data: new Date(), cor: "black" },
-        { nome: "Gabriel", telefone: "9999-8888", data: new Date(), cor: "yellow" },
-        { nome: "Nice", telefone: "9999-7777", data: new Date(), cor: "purple" }
-    ];
-    res.send(JSON.stringify(dados));
+    res.send(JSON.stringify(contatos));
+});
+
+app.post('/contatos', function (req, res){
+  contatos.push(req.body);
+  res.send(JSON.stringify(req.body))
 });
 
 app.listen(8000, function() {

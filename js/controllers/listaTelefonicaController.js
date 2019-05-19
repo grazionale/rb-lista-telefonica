@@ -1,5 +1,5 @@
 angular.module("listaTelefonica").controller("listaTelefonicaController", function ( $scope, 
-    contatosAPI, operadorasAPI) {
+    contatosAPI, operadorasAPI, generateSerial) {
     $scope.appName = "Lista Telefônica";
     $scope.contatos = [];
     var carregarContatos = function () {
@@ -11,6 +11,7 @@ angular.module("listaTelefonica").controller("listaTelefonicaController", functi
     };
     
     $scope.adicionarContato = function (contato) {
+        contato.serial = generateSerial.generate();
         contatosAPI.saveContatos(contato).then(function (response){
             delete $scope.contato;
             $scope.contatoForm.$setPristine();

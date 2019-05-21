@@ -5,11 +5,12 @@ angular.module("listaTelefonica").controller("listaTelefonicaController", functi
     var carregarContatos = function () {
         contatosAPI.getContatos().then(function (response) {
             $scope.contatos = response.data;
-        }, function error(response){
-            console.log("Erro: " + response);
+        }).catch(function (reject){
+            $scope.error = "Não foi possível carregar os dados." + reject;
         });
     };
-    
+
+    $scope.teste = "asdfasd";
     $scope.adicionarContato = function (contato) {
         contato.serial = generateSerial.generate();
         contato.data = new Date();
@@ -18,10 +19,6 @@ angular.module("listaTelefonica").controller("listaTelefonicaController", functi
             $scope.contatoForm.$setPristine();
             $scope.contatos.push(response.data);
         });
-        
-        // $scope.contatos.push(angular.copy(contato));
-        // delete $scope.contato;
-        // $scope.contatoForm.$setPristine();
     }
 
     var carregarOperadoras = function () {

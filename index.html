@@ -8,6 +8,7 @@
     <title>Lista Telefônica</title>
     <link rel="stylesheet" href="lib/bootstrap.css" type="text/css"></link>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/ui.css">
     <script src="lib/angular.min.js"></script>
     <script src="lib/angular-messages.js"></script>
     <script src="lib/angular-locale_pt-br.js"></script>
@@ -20,12 +21,14 @@
     <script src="js/value/configValue.js"></script>
     <script src="js/filters/nameFilter.js"></script>
     <script src="js/filters/ellipsiFilter.js"></script>
+    <script src="js/directives/uiAlertDirective.js"></script>
 </head>
 
 <body>
     <div ng-controller="listaTelefonicaController">
         <div class="jumbotron">
             <h2>{{appName}}</h2>
+            <ui-alert title="Ops, aconteceu um problema!" bonus=" Que pena =(" message="error">Testando o transclude</ui-alert>
             <input type="text" ng-model="inputFilter" class="form-control" placeholder="Buscar Nome...">
             <table class="table table-striped" ng-if="contatos.length > 0">
                 <tr>
